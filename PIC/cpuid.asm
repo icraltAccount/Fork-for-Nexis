@@ -24,7 +24,7 @@ jmp .done
 
 .pic:
 
-call pic
+call pic_init
 
 
 
