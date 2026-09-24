@@ -12,10 +12,14 @@ endif
 export TOP   := $(CURDIR)
 export BUILD := $(TOP)/build/$(ARCH)
 
-.PHONY: all run info clean
+.PHONY: all run info clean bear
 
 all run info:
 	$(MAKE) -C arch/$(ARCH) $@
 
 clean:
-	rm -rf $(BUILD)/$(ARCH)
+	rm -rf $(BUILD)
+
+bear:
+	rm -rf compile_commands.json
+	bear -- make ARCH=$(ARCH) all
