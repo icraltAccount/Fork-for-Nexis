@@ -1,17 +1,17 @@
-;Macros For Setting The Right IDT Entries That Are Responsible For Exceptions
+
 extern ExceptionHandler
 global ISR_Stub_Table
 ISR_Stub_Table:
-    %assign i 0 ;Creates A Variable
-    %rep 32 ;Repeats The Code Inside 32 Times(32 Exception Vectors)
-    dd ISR_Stub_%+i ;Vector Number
-    %assign i i+1 ;Next Vector Number
-    %endrep ;Finishes The Repetition When It Repeats 32 Times
+    %assign i 0
+    %rep 32 
+    dd ISR_Stub_%+i
+    %assign i i+1
+    %endrep
 
-%macro ISR_Error_Stub 1 ;This Macro Receives 1 Parameter
-ISR_Stub_%+%1: ;Automatically Makes A Label With The Right Number
+%macro ISR_Error_Stub 1
+ISR_Stub_%+%1:
     call ExceptionHandler
-    iret ;Interrupt Return, Returns With An Interruption
+    iret
 %endmacro
 
 %macro ISR_No_Error_Stub 1
@@ -20,36 +20,36 @@ ISR_Stub_%+%1:
     iret
 %endmacro
 
-;IDT Vectors Configuration
-isr_no_err_stub 0
-isr_no_err_stub 1
-isr_no_err_stub 2
-isr_no_err_stub 3
-isr_no_err_stub 4
-isr_no_err_stub 5
-isr_no_err_stub 6
-isr_no_err_stub 7
-isr_err_stub    8
-isr_no_err_stub 9
-isr_err_stub    10
-isr_err_stub    11
-isr_err_stub    12
-isr_err_stub    13
-isr_err_stub    14
-isr_no_err_stub 15
-isr_no_err_stub 16
-isr_err_stub    17
-isr_no_err_stub 18
-isr_no_err_stub 19
-isr_no_err_stub 20
-isr_no_err_stub 21
-isr_no_err_stub 22
-isr_no_err_stub 23
-isr_no_err_stub 24
-isr_no_err_stub 25
-isr_no_err_stub 26
-isr_no_err_stub 27
-isr_no_err_stub 28
-isr_no_err_stub 29
-isr_err_stub    30
-isr_no_err_stub 31
+ISR_No_Error_Stub 0
+ISR_No_Error_Stub 1
+ISR_No_Error_Stub 2
+ISR_No_Error_Stub 3
+ISR_No_Error_Stub 4
+ISR_No_Error_Stub 5
+ISR_No_Error_Stub 6
+ISR_No_Error_Stub 7
+ISR_Error_Stub 8
+ISR_No_Error_Stub 9
+ISR_Error_Stub 10
+ISR_Error_Stub 11
+ISR_Error_Stub 12
+ISR_Error_Stub 13
+ISR_Error_Stub 14
+ISR_No_Error_Stub 15
+ISR_No_Error_Stub 16
+ISR_Error_Stub 17
+ISR_No_Error_Stub 18
+ISR_No_Error_Stub 19
+ISR_No_Error_Stub 20
+ISR_No_Error_Stub 21
+ISR_No_Error_Stub 22
+ISR_No_Error_Stub 23
+ISR_No_Error_Stub 24
+ISR_No_Error_Stub 25
+ISR_No_Error_Stub 26
+ISR_No_Error_Stub 27
+ISR_No_Error_Stub 28
+ISR_No_Error_Stub 29
+ISR_Error_Stub 30
+ISR_No_Error_Stub 31
+
