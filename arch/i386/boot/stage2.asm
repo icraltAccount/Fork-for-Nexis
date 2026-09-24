@@ -1,10 +1,6 @@
 ; Copyright (c) 2026 icarotelesdasilva
 ; Licensed under the MIT License
 
-; NOTE:
-;   The code was tested and evaluated on actual hardware.
-;   All information was taken from (wiki.osdev.org).
-
 bits 16
 org 0x10000
 

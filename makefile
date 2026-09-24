@@ -1,85 +1,21 @@
-BUILD := build
+# Copyright (c) 2026 icarotelesdasilva colauzz-coder saintsHr
+# Licensed under the MIT License
 
-CC := gcc
-LD := ld
-AS := nasm
-OBJCOPY := objcopy
+ifndef ARCH
+$(error Architecture is not set. Use: make ARCH=<architecture>)
+endif
 
-CFLAGS := \
-    -m32 \
-    -ffreestanding \
-    -fno-pie \
-    -fno-stack-protector \
-    -fno-builtin \
-    -fno-asynchronous-unwind-tables \
-    -fno-unwind-tables \
-    -Wall \
-    -Wextra
+ifeq ($(wildcard arch/$(ARCH)/makefile),)
+$(error Unknown architecture: $(ARCH))
+endif
 
-LDFLAGS := -m elf_i386 -T linker.ld
+export TOP   := $(CURDIR)
+export BUILD := $(TOP)/build/$(ARCH)
 
-arch/i386 := arch/i386
+.PHONY: all run info clean
 
-C_SOURCES := $(shell find $(arch/i386) -type f -name '*.c')
-ASM_SOURCES := $(shell find $(arch/i386)/kernel -type f -name '*.asm')
-
-C_OBJECTS := $(C_SOURCES:%.c=$(BUILD)/%.o)
-ASM_OBJECTS := $(ASM_SOURCES:%.asm=$(BUILD)/%.o)
-
-KERNEL_OBJECTS := $(ASM_OBJECTS) $(C_OBJECTS)
-
-STAGE1 := $(BUILD)/stage1.bin
-STAGE2 := $(BUILD)/stage2.bin
-
-KERNEL_ELF := $(BUILD)/kernel.elf
-KERNEL_BIN := $(BUILD)/kernel.bin
-
-IMAGE := $(BUILD)/os.img
-
-.PHONY: all clean run info
-
-all: $(IMAGE)
-
-$(BUILD)/%.o: %.c
-	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) -c $< -o $@
-
-$(BUILD)/%.o: %.asm
-	@mkdir -p $(dir $@)
-	$(AS) -f elf32 $< -o $@
-
-$(STAGE2): $(arch/i386)/boot/stage2.asm
-	@mkdir -p $(BUILD)
-	$(AS) -f bin $< -o $@
-
-$(KERNEL_ELF): $(KERNEL_OBJECTS) linker.ld
-	@mkdir -p $(BUILD)
-	$(LD) $(LDFLAGS) -o $@ $(KERNEL_OBJECTS)
-
-$(KERNEL_BIN): $(KERNEL_ELF)
-	$(OBJCOPY) -O binary $< $@
-
-$(STAGE1): $(arch/i386)/boot/stage1.asm $(STAGE2) $(KERNEL_BIN)
-	@mkdir -p $(BUILD)
-	$(eval KERNEL_SIZE := $(shell stat -c%s $(KERNEL_BIN)))
-	$(eval KERNEL_SECTORS := $(shell echo $$(( ($(KERNEL_SIZE) + 511) / 512 ))))
-	$(eval TOTAL_SECTORS := $(shell echo $$(( $(KERNEL_SECTORS) + 1 ))))
-	$(AS) -f bin -dTOTAL_SECTORS=$(TOTAL_SECTORS) $< -o $@
-
-$(IMAGE): $(STAGE1) $(STAGE2) $(KERNEL_BIN)
-	@mkdir -p $(BUILD)
-	cat $(STAGE1) $(STAGE2) $(KERNEL_BIN) > $@
-	truncate -s $$(( ($$(stat -c%s $@) + 511) / 512 * 512 )) $@
-
-info: $(IMAGE)
-	@echo
-	@stat -c '%n %s bytes' $(STAGE1)
-	@stat -c '%n %s bytes' $(STAGE2)
-	@stat -c '%n %s bytes' $(KERNEL_BIN)
-	@stat -c '%n %s bytes' $(IMAGE)
-
-run: $(IMAGE)
-	qemu-system-i386 -drive format=raw,file=$(IMAGE)
+all run info:
+	$(MAKE) -C arch/$(ARCH) $@
 
 clean:
-	rm -rf $(BUILD)
+	rm -rf $(BUILD)/$(ARCH)
