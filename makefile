@@ -18,10 +18,10 @@ CFLAGS := \
 
 LDFLAGS := -m elf_i386 -T linker.ld
 
-SRC := src
+arch/i386 := arch/i386
 
-C_SOURCES := $(shell find $(SRC) -type f -name '*.c')
-ASM_SOURCES := $(shell find $(SRC)/kernel -type f -name '*.asm')
+C_SOURCES := $(shell find $(arch/i386) -type f -name '*.c')
+ASM_SOURCES := $(shell find $(arch/i386)/kernel -type f -name '*.asm')
 
 C_OBJECTS := $(C_SOURCES:%.c=$(BUILD)/%.o)
 ASM_OBJECTS := $(ASM_SOURCES:%.asm=$(BUILD)/%.o)
@@ -48,7 +48,7 @@ $(BUILD)/%.o: %.asm
 	@mkdir -p $(dir $@)
 	$(AS) -f elf32 $< -o $@
 
-$(STAGE2): $(SRC)/boot/stage2.asm
+$(STAGE2): $(arch/i386)/boot/stage2.asm
 	@mkdir -p $(BUILD)
 	$(AS) -f bin $< -o $@
 
@@ -59,7 +59,7 @@ $(KERNEL_ELF): $(KERNEL_OBJECTS) linker.ld
 $(KERNEL_BIN): $(KERNEL_ELF)
 	$(OBJCOPY) -O binary $< $@
 
-$(STAGE1): $(SRC)/boot/stage1.asm $(STAGE2) $(KERNEL_BIN)
+$(STAGE1): $(arch/i386)/boot/stage1.asm $(STAGE2) $(KERNEL_BIN)
 	@mkdir -p $(BUILD)
 	$(eval KERNEL_SIZE := $(shell stat -c%s $(KERNEL_BIN)))
 	$(eval KERNEL_SECTORS := $(shell echo $$(( ($(KERNEL_SIZE) + 511) / 512 ))))
