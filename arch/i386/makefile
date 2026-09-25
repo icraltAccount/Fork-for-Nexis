@@ -25,18 +25,21 @@ LDFLAGS := \
 
 KERNEL_SRC := \
 	$(shell find $(TOP)/kernel -name '*.c') \
-	$(shell find $(TOP)/drivers -name '*.c')
+	$(shell find $(TOP)/drivers -name '*.c') \
+	$(shell find $(TOP)/lib -name '*.c')
 ASM_SRC := \
-	$(shell find $(TOP)/kernel -name '*.asm')
+	$(shell find $(TOP)/kernel -name '*.asm') \
+	$(shell find $(TOP)/drivers -name '*.asm') \
+	$(shell find $(TOP)/lib -name '*.asm')
 
 OBJ_C := \
-	$(patsubst $(TOP)/%.c,$(BUILD)/%.o,$(KERNEL_SRC))
+	$(patsubst $(TOP)/%.c,$(BUILD)/%.c.o,$(KERNEL_SRC))
 OBJ_ASM := \
 	$(patsubst $(TOP)/%.asm,$(BUILD)/%.asm.o,$(ASM_SRC))
 
 OBJECTS := \
-	$(BUILD)/kernel/src/main.o \
-    $(filter-out $(BUILD)/kernel/src/main.o, $(OBJ_C)) \
+	$(BUILD)/kernel/src/main.c.o \
+    $(filter-out $(BUILD)/kernel/src/main.c.o, $(OBJ_C)) \
     $(OBJ_ASM)
 
 STAGE1 := $(BUILD)/stage1.bin
@@ -50,15 +53,27 @@ IMAGE := $(BUILD)/kernel.img
 
 all: $(IMAGE)
 
-$(BUILD)/kernel/%.o: $(TOP)/kernel/%.c
+$(BUILD)/kernel/%.c.o: $(TOP)/kernel/%.c
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(BUILD)/drivers/%.o: $(TOP)/drivers/%.c
+$(BUILD)/drivers/%.c.o: $(TOP)/drivers/%.c
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(BUILD)/lib/%.c.o: $(TOP)/lib/%.c
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(BUILD)/kernel/%.asm.o: $(TOP)/kernel/%.asm
+	@mkdir -p $(dir $@)
+	$(AS) -f elf32 $< -o $@
+
+$(BUILD)/drivers/%.asm.o: $(TOP)/drivers/%.asm
+	@mkdir -p $(dir $@)
+	$(AS) -f elf32 $< -o $@
+
+$(BUILD)/lib/%.asm.o: $(TOP)/lib/%.asm
 	@mkdir -p $(dir $@)
 	$(AS) -f elf32 $< -o $@
 
