@@ -2,12 +2,13 @@
 // Licensed under the MIT License
 
 #include "vga/vga.h"
+#include "../IDT/idt.h"
 
 extern int cpuid(void);
 
 
 void kmain() {
-
+void InitIDT(void);
 
 vga_set_cell(
 
