@@ -6,7 +6,44 @@ org 0x10000
 
 dw 0x4349
 
+MEM_MAP_COUNT equ 0x8000
+MEM_MAP_DATA  equ 0x8004
+
 stage2:
+    xor ax, ax
+    mov es, ax
+    mov di, MEM_MAP_DATA
+    xor ebp, ebp
+    mov edx, 0x534D4150
+    xor ebx, ebx
+
+.e820_loop:
+    mov eax, 0x0000E820
+    mov ecx, 24
+    int 0x15
+    jc .e820_end
+
+    cmp eax, 0x534D4150
+    jne .e820_failed
+
+    mov ecx, [es:di + 8]
+    or ecx, [es:di + 12]
+    jz .e820_jmp_entry
+
+    inc ebp
+    add di, 24
+
+.e820_jmp_entry:
+    test ebx, ebx
+    jnz .e820_loop
+    jmp .e820_failed
+
+.e820_failed:
+    xor ebp, ebp
+
+.e820_end:
+    mov [MEM_MAP_COUNT], bp
+
     cli
 
     lgdt [dword gdt_descriptor]
@@ -19,7 +56,7 @@ stage2:
 
     bits 32
 
-    start_protected_mode:
+start_protected_mode:
 
     mov ax, 0x10
 
@@ -60,3 +97,4 @@ gdt_descriptor:
     dd gdt_start
 
 times 512 - ($ - $$) db 0
+
