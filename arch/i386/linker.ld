@@ -1,7 +1,7 @@
 /* Copyright (c) 2026 icarotelesdasilva colauzz-coder saintsHr */
 /* Licensed under the MIT License */
 
-ENTRY(_start)
+ENTRY(kmain)
 
 SECTIONS {
     . = 0x100000;

@@ -4,6 +4,7 @@
 bits 32
 
 global _start
+extern main
 extern kmain
 
 _start:

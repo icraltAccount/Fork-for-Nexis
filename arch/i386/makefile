@@ -17,16 +17,17 @@ CFLAGS := -m32 -ffreestanding -fno-pie -fno-stack-protector \
           -fno-builtin -fno-asynchronous-unwind-tables \
           -fno-unwind-tables -Wall -Wextra -O2 -g $(INCLUDES)
 
-LDFLAGS := -m elf_i386 -T linker.ld
+LDFLAGS := -m elf_i386 -T linker.ld --no-warn-rwx-segments
 
-KERNEL_SRC := $(shell find $(TOP)/kernel/src $(TOP)/drivers/src -name '*.c')
-ARCH_SRC   := $(shell find src -name '*.c')
-ASM_SRC    := boot/entry.asm $(shell find src -name '*.asm')
+KERNEL_SRC := $(shell find $(TOP)/kernel -name '*.c') $(shell find $(TOP)/drivers -name '*.c')
+ASM_SRC    := $(shell find $(TOP)/kernel -name '*.asm')
 
-OBJECTS := \
-	$(patsubst $(TOP)/%.c,$(BUILD)/%.o,$(KERNEL_SRC)) \
-	$(patsubst %.c,$(BUILD)/%.o,$(ARCH_SRC)) \
-	$(patsubst %.asm,$(BUILD)/%.o,$(ASM_SRC))
+OBJ_C   := $(patsubst $(TOP)/%.c,$(BUILD)/%.o,$(KERNEL_SRC))
+OBJ_ASM := $(patsubst $(TOP)/%.asm,$(BUILD)/%.asm.o,$(ASM_SRC))
+
+OBJECTS := $(BUILD)/kernel/src/main.o \
+           $(filter-out $(BUILD)/kernel/src/main.o, $(OBJ_C)) \
+           $(OBJ_ASM)
 
 STAGE1     := $(BUILD)/stage1.bin
 STAGE2     := $(BUILD)/stage2.bin
@@ -47,11 +48,7 @@ $(BUILD)/drivers/%.o: $(TOP)/drivers/%.c
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(BUILD)/%.o: %.c
-	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) -c $< -o $@
-
-$(BUILD)/%.o: %.asm
+$(BUILD)/kernel/%.asm.o: $(TOP)/kernel/%.asm
 	@mkdir -p $(dir $@)
 	$(AS) -f elf32 $< -o $@
 
@@ -81,3 +78,4 @@ info: $(IMAGE)
 
 run: $(IMAGE)
 	$(QEMU) -drive format=raw,file=$(IMAGE)
+

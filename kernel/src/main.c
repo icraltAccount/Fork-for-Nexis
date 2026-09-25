@@ -3,8 +3,14 @@
 
 #include "vga/vga.h"
 
+extern int cpuid(void);
+
+
 void kmain() {
-    vga_set_cell(
+
+
+vga_set_cell(
+
         vga_make_cell(
             'A',
             vga_make_attr(VGA_COLOR_WHITE, VGA_COLOR_BLACK)
