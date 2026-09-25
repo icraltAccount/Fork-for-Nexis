@@ -5,9 +5,9 @@ ifndef TOP
 $(error Run make from the project root: make ARCH=i386)
 endif
 
-CC      := i686-elf-gcc
-LD      := i686-elf-ld
-OBJCOPY := i686-elf-objcopy
+CC      := gcc
+LD      := ld
+OBJCOPY := objcopy
 AS      := nasm
 QEMU    := qemu-system-i386
 
