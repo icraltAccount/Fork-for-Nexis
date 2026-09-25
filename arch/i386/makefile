@@ -11,29 +11,39 @@ OBJCOPY := objcopy
 AS      := nasm
 QEMU    := qemu-system-i386
 
-INCLUDES := -I$(TOP)/kernel/include -I$(TOP)/drivers/include -Iinclude
+INCLUDES := \
+	-I$(TOP)/kernel/include -I$(TOP)/drivers/include \
+	-I$(TOP)/lib/include -Iinclude
 
-CFLAGS := -m32 -ffreestanding -fno-pie -fno-stack-protector \
-          -fno-builtin -fno-asynchronous-unwind-tables \
-          -fno-unwind-tables -Wall -Wextra -O2 -g $(INCLUDES)
+CFLAGS := \
+	-m32 -ffreestanding -fno-pie -fno-stack-protector \
+	-fno-builtin -fno-asynchronous-unwind-tables \
+    -fno-unwind-tables -Wall -Wextra -O2 -g $(INCLUDES)
 
-LDFLAGS := -m elf_i386 -T linker.ld --no-warn-rwx-segments
+LDFLAGS := \
+	-m elf_i386 -T linker.ld --no-warn-rwx-segments
 
-KERNEL_SRC := $(shell find $(TOP)/kernel -name '*.c') $(shell find $(TOP)/drivers -name '*.c')
-ASM_SRC    := $(shell find $(TOP)/kernel -name '*.asm')
+KERNEL_SRC := \
+	$(shell find $(TOP)/kernel -name '*.c') \
+	$(shell find $(TOP)/drivers -name '*.c')
+ASM_SRC := \
+	$(shell find $(TOP)/kernel -name '*.asm')
 
-OBJ_C   := $(patsubst $(TOP)/%.c,$(BUILD)/%.o,$(KERNEL_SRC))
-OBJ_ASM := $(patsubst $(TOP)/%.asm,$(BUILD)/%.asm.o,$(ASM_SRC))
+OBJ_C := \
+	$(patsubst $(TOP)/%.c,$(BUILD)/%.o,$(KERNEL_SRC))
+OBJ_ASM := \
+	$(patsubst $(TOP)/%.asm,$(BUILD)/%.asm.o,$(ASM_SRC))
 
-OBJECTS := $(BUILD)/kernel/src/main.o \
-           $(filter-out $(BUILD)/kernel/src/main.o, $(OBJ_C)) \
-           $(OBJ_ASM)
+OBJECTS := \
+	$(BUILD)/kernel/src/main.o \
+    $(filter-out $(BUILD)/kernel/src/main.o, $(OBJ_C)) \
+    $(OBJ_ASM)
 
-STAGE1     := $(BUILD)/stage1.bin
-STAGE2     := $(BUILD)/stage2.bin
+STAGE1 := $(BUILD)/stage1.bin
+STAGE2 := $(BUILD)/stage2.bin
 KERNEL_ELF := $(BUILD)/kernel.elf
 KERNEL_BIN := $(BUILD)/kernel.bin
-IMAGE      := $(BUILD)/kernel.img
+IMAGE := $(BUILD)/kernel.img
 
 .PHONY: all run info
 .DELETE_ON_ERROR:
@@ -78,4 +88,3 @@ info: $(IMAGE)
 
 run: $(IMAGE)
 	$(QEMU) -drive format=raw,file=$(IMAGE)
-

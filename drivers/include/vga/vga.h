@@ -28,7 +28,7 @@ typedef enum {
 typedef uint8_t vga_char_t;
 typedef uint8_t vga_attr_t;
 typedef uint16_t vga_cell_t;
-typedef uint8_t vga_coord_t;
+typedef uint16_t vga_coord_t;
 
 vga_attr_t vga_make_attr(vga_color_t fg, vga_color_t bg);
 vga_cell_t vga_make_cell(vga_char_t c, vga_attr_t attr);
