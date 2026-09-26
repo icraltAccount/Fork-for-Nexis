@@ -1,6 +1,12 @@
 #include <stdint.h>
 #include "../../include/idt/idt.h"
 #include "console/console.h"
+/*
+
+    NOTE: THIS SOURCE CODE WAS BASED ON OSDEV.WIKI, LINKS THAT WERE USED: ( https://wiki.osdev.org/Interrupt_Descriptor_Table ) ( https://wiki.osdev.org/Interrupts_Tutorial )
+
+ */
+
 extern void* isr_stub_table[];
 
 typedef struct {
