@@ -1,6 +1,6 @@
 #include <stdint.h>
 #include "../../include/idt/idt.h"
-#include "vga/vga.h"
+#include "console/console.h"
 extern void* isr_stub_table[];
 
 typedef struct {
@@ -20,13 +20,7 @@ typedef struct {
 static idtr_struct idtr;
 
 void exception_handler(void) {
-    vga_set_cell(
-        vga_make_cell(
-            'E',
-            vga_make_attr(VGA_COLOR_LIGHT_RED, VGA_COLOR_BLACK)
-        ),
-        vga_get_index(39, 20)
-    );
+    console_write_string("CPU Got Inside An Exception");
     __asm__ __volatile__("cli");
     __asm__ __volatile__("hlt");
 }
