@@ -25,7 +25,7 @@ typedef enum {
 #define VGA_WIDTH 80
 #define VGA_HEIGHT 25
 
-typedef uint8_t vga_char_t;
+typedef char vga_char_t;
 typedef uint8_t vga_attr_t;
 typedef uint16_t vga_cell_t;
 typedef uint8_t vga_coord_t;

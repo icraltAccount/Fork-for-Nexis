@@ -4,28 +4,13 @@
 #include "console/console.h"
 
 void kinit() {
-
+    console_clear();
 }
 
 void kmain() {
     kinit();
 
-    console_clear();
-
-    console_write_char('H');
-    console_write_char('e');
-    console_write_char('l');
-    console_write_char('l');
-    console_write_char('o');
-    console_write_char(',');
-    console_write_char(' ');
-    console_write_char('K');
-    console_write_char('e');
-    console_write_char('r');
-    console_write_char('n');
-    console_write_char('e');
-    console_write_char('l');
-    console_write_char('!');
+    console_write_string("Hello Kernel!");
 
     while(1);
 }

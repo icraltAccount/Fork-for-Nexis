@@ -19,6 +19,17 @@ void console_set_color(vga_color_t fg, vga_color_t bg) {
     console_bg = bg;
 }
 
+void console_clear(void) {
+    for (vga_coord_t y = 0; y < VGA_HEIGHT; y++) {
+        for (vga_coord_t x = 0; x < VGA_WIDTH; x++) {
+            vga_set_cell(
+                vga_make_cell(' ', vga_make_attr(console_fg, console_bg)),
+                vga_get_index(x, y)
+            );
+        }
+    }
+}
+
 void console_write_char(vga_char_t c) {
     vga_set_cell(
         vga_make_cell(c, vga_make_attr(console_fg, console_bg)),
@@ -35,14 +46,11 @@ void console_write_char(vga_char_t c) {
     console_move(console_x, console_y);
 }
 
+void console_write_string(const vga_char_t* c) {
+    console_str_len_t i = 0;
 
-void console_clear(void) {
-    for (vga_coord_t y = 0; y < VGA_HEIGHT; y++) {
-        for (vga_coord_t x = 0; x < VGA_WIDTH; x++) {
-            vga_set_cell(
-                vga_make_cell(' ', vga_make_attr(console_fg, console_bg)),
-                vga_get_index(x, y)
-            );
-        }
+    while (c[i] != '\0') {
+        console_write_char(c[i]);
+        i++;
     }
 }
