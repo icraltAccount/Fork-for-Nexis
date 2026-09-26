@@ -27,11 +27,9 @@ vga_cell_t vga_get_cell(vga_index_t index) {
     return framebuffer[index];
 }
 
-void vga_move_cursor(vga_coord_t x, vga_coord_t y) {
-    vga_index_t pos = vga_get_index(x, y);
-
+void vga_move_cursor(vga_index_t index) {
     io_outb(0x3D4, 0x0E);
-    io_outb(0x3D5, (pos >> 8) & 0xFF);
+    io_outb(0x3D5, (index >> 8) & 0xFF);
     io_outb(0x3D4, 0x0F);
-    io_outb(0x3D5, pos & 0xFF);
+    io_outb(0x3D5, index & 0xFF);
 }

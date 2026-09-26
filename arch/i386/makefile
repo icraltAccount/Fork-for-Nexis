@@ -23,8 +23,10 @@ GRUBFILE := grub-file
 # --= Flags =---------------------------------------------------------------------------------------
 
 INCLUDES := \
-	-I$(TOP)/kernel/include -I$(TOP)/drivers/include \
-	-I$(TOP)/lib/include -Iinclude
+	-I$(TOP)/kernel/include \
+	-I$(TOP)/drivers/include \
+	-I$(TOP)/lib/include \
+	-Iinclude
 
 FLAGS_C := \
 	-m32 -ffreestanding -fno-pie -fno-stack-protector \

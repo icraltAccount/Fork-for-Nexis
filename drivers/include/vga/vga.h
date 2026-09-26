@@ -38,4 +38,4 @@ vga_index_t vga_get_index(vga_coord_t x, vga_coord_t y);
 void vga_set_cell(vga_cell_t cell, vga_index_t index);
 vga_cell_t vga_get_cell(vga_index_t index);
 
-void vga_move_cursor(vga_coord_t x, vga_coord_t y);
+void vga_move_cursor(vga_index_t index);

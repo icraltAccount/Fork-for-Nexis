@@ -1,19 +1,31 @@
 // Copyright (c) 2026 icarotelesdasilva colauzz-coder saintsHr
 // Licensed under the MIT License
 
-// #include "idt/idt.h"
-#include "vga/vga.h"
+#include "console/console.h"
+
+void kinit() {
+
+}
 
 void kmain() {
-    vga_set_cell(
-        vga_make_cell(
-            '#',
-            vga_make_attr(VGA_COLOR_LIGHT_RED, VGA_COLOR_BLACK)
-        ),
-        vga_get_index(39, 12)
-    );
+    kinit();
 
-    // idt_init(); // triple fault
+    console_clear();
+
+    console_write_char('H');
+    console_write_char('e');
+    console_write_char('l');
+    console_write_char('l');
+    console_write_char('o');
+    console_write_char(',');
+    console_write_char(' ');
+    console_write_char('K');
+    console_write_char('e');
+    console_write_char('r');
+    console_write_char('n');
+    console_write_char('e');
+    console_write_char('l');
+    console_write_char('!');
 
     while(1);
 }
