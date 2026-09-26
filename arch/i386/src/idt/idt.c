@@ -1,13 +1,12 @@
 #include <stdint.h>
-#include "idt/idt.h"
+#include "../../include/idt/idt.h"
 
 extern void* isr_stub_table[];
 static idt_reg_t idtr;
-__attribute__((aligned(0x10)))
-idt_t idt[256];
+__attribute__((aligned(0x10))) idt_t idt[256];
 
 __attribute__((noreturn))
-void idt_exception_handler(void) {
+void exception_handler(void) {
     __asm__ __volatile__("cli");
     while (1) __asm__ __volatile__("hlt");
 }

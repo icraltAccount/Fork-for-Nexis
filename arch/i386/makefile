@@ -13,8 +13,7 @@ QEMU    := qemu-system-i386
 
 INCLUDES := \
 	-I$(TOP)/kernel/include -I$(TOP)/drivers/include \
-	-I$(TOP)/lib/include -Iinclude
-
+	-I$(TOP)/lib/include -Iinclude 
 CFLAGS := \
 	-m32 -ffreestanding -fno-pie -fno-stack-protector \
 	-fno-builtin -fno-asynchronous-unwind-tables \
@@ -26,12 +25,13 @@ LDFLAGS := \
 KERNEL_SRC := \
 	$(shell find $(TOP)/kernel -name '*.c') \
 	$(shell find $(TOP)/drivers -name '*.c') \
-	$(shell find $(TOP)/lib -name '*.c')
+	$(shell find $(TOP)/lib -name '*.c') \
+	$(shell find $(TOP)/arch -name '*.c')
 ASM_SRC := \
 	$(shell find $(TOP)/kernel -name '*.asm') \
 	$(shell find $(TOP)/drivers -name '*.asm') \
-	$(shell find $(TOP)/lib -name '*.asm')
-
+	$(shell find $(TOP)/lib -name '*.asm') \
+	$(shell find $(TOP)/arch -name '*.asm' ! -path '*/boot/*')
 OBJ_C := \
 	$(patsubst $(TOP)/%.c,$(BUILD)/%.c.o,$(KERNEL_SRC))
 OBJ_ASM := \
@@ -52,6 +52,13 @@ IMAGE := $(BUILD)/kernel.img
 .DELETE_ON_ERROR:
 
 all: $(IMAGE)
+$(BUILD)/arch/%.c.o: $(TOP)/arch/%.c
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(BUILD)/arch/%.asm.o: $(TOP)/arch/%.asm
+	@mkdir -p $(dir $@)
+	$(AS) -f elf32 $< -o $@
 
 $(BUILD)/kernel/%.c.o: $(TOP)/kernel/%.c
 	@mkdir -p $(dir $@)
