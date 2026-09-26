@@ -15,7 +15,7 @@ void idt_set_descriptor(uint8_t vector, void *isr, uint8_t flags) {
     idt[vector].isr_low = (uint32_t)isr & 0xFFFF;
     idt[vector].selector = 0x08;
     idt[vector].flags = flags;
-    idt[vector].isr_high = (uint32_t)isr << 16;
+    idt[vector].isr_high = (uint32_t)isr >> 16;
     idt[vector].extra = 0;
 }
 
@@ -28,5 +28,5 @@ void idt_init(void) {
     }
 
     __asm__ __volatile__ ("lidt %0" : : "m"(idtr));
-    __asm__ __volatile__ ("sti");
+    /*activate only if PIC is ready*/__asm__ __volatile__ ("sti");
 }
