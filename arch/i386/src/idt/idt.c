@@ -1,17 +1,37 @@
 #include <stdint.h>
 #include "../../include/idt/idt.h"
-
+#include "vga/vga.h"
 extern void* isr_stub_table[];
-static idt_reg_t idtr;
-__attribute__((aligned(0x10))) idt_t idt[256];
 
-__attribute__((noreturn))
+typedef struct {
+    uint16_t isr_low;
+    uint16_t selector;
+    uint8_t extra;
+    uint8_t flags;
+    uint16_t isr_high;
+} __attribute__((packed)) idt_struct;
+__attribute__((aligned(0x10)))
+idt_struct idt[256];
+
+typedef struct {
+    uint16_t limit;
+    uint32_t base;
+} __attribute__((packed)) idtr_struct;
+static idtr_struct idtr;
+
 void exception_handler(void) {
+    vga_set_cell(
+        vga_make_cell(
+            'E',
+            vga_make_attr(VGA_COLOR_LIGHT_RED, VGA_COLOR_BLACK)
+        ),
+        vga_get_index(39, 20)
+    );
     __asm__ __volatile__("cli");
-    while (1) __asm__ __volatile__("hlt");
+    __asm__ __volatile__("hlt");
 }
 
-void idt_set_descriptor(uint8_t vector, void *isr, uint8_t flags) {
+void idt_set_descriptor(uint8_t vector, void* isr, uint8_t flags) {
     idt[vector].isr_low = (uint32_t)isr & 0xFFFF;
     idt[vector].selector = 0x08;
     idt[vector].flags = flags;
@@ -21,12 +41,12 @@ void idt_set_descriptor(uint8_t vector, void *isr, uint8_t flags) {
 
 void idt_init(void) {
     idtr.base = (uint32_t)&idt[0];
-    idtr.limit = (uint16_t)sizeof(idt_t) * 256 - 1;
+    idtr.limit = (uint16_t)sizeof(idt_struct) * 256 - 1;
 
     for(uint32_t i = 0; i < 32; i++) {
         idt_set_descriptor(i, isr_stub_table[i], 0x8E);
     }
 
     __asm__ __volatile__ ("lidt %0" : : "m"(idtr));
-    /*activate only if PIC is ready*/__asm__ __volatile__ ("sti");
+    //Add Only When PIC Exists: __asm__ __volatile__ ("sti");
 }
