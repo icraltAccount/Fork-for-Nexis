@@ -1,8 +1,9 @@
 // Copyright (c) 2026 icarotelesdasilva colauzz-coder saintsHr
 // Licensed under the MIT License
 
-#include "../../drivers/include/vga/vga.h"
-#include "../../arch/i386/include/idt/idt.h"
+// #include "idt/idt.h"
+#include "vga/vga.h"
+
 void kmain() {
     vga_set_cell(
         vga_make_cell(
@@ -11,6 +12,8 @@ void kmain() {
         ),
         vga_get_index(39, 12)
     );
-    idt_init();
+
+    // idt_init(); // triple fault
+
     while(1);
 }
