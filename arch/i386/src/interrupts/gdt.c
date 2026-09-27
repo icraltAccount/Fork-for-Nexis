@@ -2,7 +2,7 @@
 // Licensed under the MIT License
 
 #include "interrupts/gdt.h"
-#include "types/types.h"
+#include "memory/memory.h"
 
 extern void gdt_flush(ptr_t);
 

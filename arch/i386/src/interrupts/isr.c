@@ -4,7 +4,7 @@
 #include "interrupts/isr.h"
 #include "interrupts/idt.h"
 #include "interrupts/interrupts.h"
-#include "types/types.h"
+#include "memory/memory.h"
 #include "main.h"
 
 extern ptr_t isr_stub_table[];

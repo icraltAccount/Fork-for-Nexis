@@ -4,7 +4,7 @@
 #pragma once
 
 #include <stdint.h>
-#include "types/types.h"
+#include "memory/memory.h"
 
 typedef void (*irq_handler_t)(void);
 typedef uint8_t irq_num_t;

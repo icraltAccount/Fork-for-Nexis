@@ -43,9 +43,7 @@ void kinit() {
 void kmain() {
     kinit();
 
-    volatile int a = 10;
-    volatile int b = 0;
-    volatile int c = a / b;
+
 
     while(1) __asm__ __volatile__("hlt");
 }

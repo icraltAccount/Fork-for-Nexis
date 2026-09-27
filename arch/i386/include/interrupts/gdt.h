@@ -4,7 +4,7 @@
 #pragma once
 
 #include <stdint.h>
-#include "types/types.h"
+#include "memory/memory.h"
 
 typedef struct {
     uint16_t limit_low;
