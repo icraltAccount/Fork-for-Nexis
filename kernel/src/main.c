@@ -4,12 +4,14 @@
 #include "main.h"
 
 #include "console/console.h"
+#include "vga/vga.h"
 
 #include "interrupts/idt.h"
 #include "interrupts/gdt.h"
 #include "interrupts/pic.h"
 #include "interrupts/interrupts.h"
-#include "vga/vga.h"
+
+#include "string/string.h"
 
 void kpanic(const vga_char_t* message) {
     interrupts_disable();
