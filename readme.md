@@ -27,7 +27,7 @@ Originally, the bootloader was a custom one written in assembly, but in this ver
 
 The kernel was designed to handle the transition from:
 
-'''Ring 0 -> drivers -> Ring 3'''
+`Ring 0 -> drivers -> Ring 3`
 
 It is a kernel designed to serve as the foundation for an operating system; it comes complete with memory management, drivers, gdt, a bootloader, and more.
 
