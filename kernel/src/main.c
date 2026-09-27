@@ -45,7 +45,7 @@ void kinit() {
 void kmain() {
     kinit();
 
-
+console_write_string("Hello, Kernel");
 
     while(1) __asm__ __volatile__("hlt");
 }
