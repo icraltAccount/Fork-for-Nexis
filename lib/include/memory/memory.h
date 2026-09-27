@@ -10,4 +10,4 @@ typedef uint8_t byte_t;
 
 void *memset(void *dst, byte_t value, usize_t n);
 void *memcpy(void *dst, const void *src, usize_t n);
-isize_t memcmp(const void *a, const void *b, usize_t n)
+isize_t memcmp(const void *a, const void *b, usize_t n);

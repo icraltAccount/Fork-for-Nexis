@@ -33,6 +33,8 @@ void kinit() {
     interrupts_disable();
 
     console_clear();
+    console_move(0, 0);
+
     gdt_init();
     idt_init();
     pic_enable(0x20, 0x28);
