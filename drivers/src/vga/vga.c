@@ -1,5 +1,8 @@
-#include "../../include/vga/vga.h"
-#include "../../../lib/include/io/io.h"
+// Copyright (c) 2026 icarotelesdasilva colauzz-coder saintsHr
+// Licensed under the MIT License
+
+#include "vga/vga.h"
+#include "io/io.h"
 
 static volatile vga_cell_t *const framebuffer = (volatile vga_cell_t *)VGA_MEMORY;
 

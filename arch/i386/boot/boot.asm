@@ -1,3 +1,6 @@
+; Copyright (c) 2026 icarotelesdasilva colauzz-coder saintsHr
+; Licensed under the MIT License
+
 MBALIGN     equ 1<<0
 MEMINFO     equ 1<<1
 FLAGS       equ MBALIGN | MEMINFO

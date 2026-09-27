@@ -29,13 +29,18 @@ INCLUDES := \
 	-Iinclude
 
 FLAGS_C := \
-	-m32 -ffreestanding -fno-pie -fno-stack-protector \
-	-fno-builtin -fno-asynchronous-unwind-tables \
-	-fno-unwind-tables -Wall -Wextra -O2 -g \
-	-MMD -MP $(INCLUDES)
+	-m32 -ffreestanding -fno-pie -fno-pic \
+	-fno-stack-protector -fno-builtin \
+	-fno-asynchronous-unwind-tables \
+	-fno-unwind-tables -fno-exceptions \
+	-fno-omit-frame-pointer -fcf-protection=none \
+	-mgeneral-regs-only -Wall -Wextra \
+	-Werror=implicit-function-declaration \
+	-O2 -g -mno-sse -mno-sse2 -mno-mmx \
+	-mno-3dnow -mno-avx -MMD -MP $(INCLUDES)
 
 FLAGS_LD := \
-	-m elf_i386 -T linker.ld --no-warn-rwx-segments
+	-m elf_i386 -T linker.ld --no-warn-rwx-segments -nostdlib
 
 # --= Sources =-------------------------------------------------------------------------------------
 

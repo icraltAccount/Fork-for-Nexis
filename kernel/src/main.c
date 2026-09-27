@@ -3,8 +3,20 @@
 
 #include "console/console.h"
 
+#include "interrupts/idt.h"
+#include "interrupts/gdt.h"
+#include "interrupts/pic.h"
+#include "interrupts/interrupts.h"
+
 void kinit() {
+    interrupts_disable();
+
     console_clear();
+    gdt_init();
+    idt_init();
+    pic_enable(0x20, 0x28);
+
+    interrupts_enable();
 }
 
 void kmain() {
