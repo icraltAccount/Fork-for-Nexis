@@ -6,7 +6,7 @@
 
 extern void gdt_flush(ptr_t);
 
-static gdt_entry_t gdt_e[5];
+static gdt_entry_t gdt_e[GDT_ENTRY_COUNT];
 static gdt_ptr_t gdt_p;
 
 static void gdt_set_gate(
@@ -25,14 +25,53 @@ static void gdt_set_gate(
 }
 
 void gdt_init(void) {
-    gdt_p.limit = (sizeof(gdt_entry_t) * 5) - 1;
+    gdt_p.limit = (sizeof(gdt_entry_t) * GDT_ENTRY_COUNT) - 1;
     gdt_p.base  = (ptr_t)&gdt_e;
 
-    gdt_set_gate(0, 0, 0, 0, 0);
-    gdt_set_gate(1, 0, 0xFFFFFFFF, 0x9A, 0xCF);
-    gdt_set_gate(2, 0, 0xFFFFFFFF, 0x92, 0xCF);
-    gdt_set_gate(3, 0, 0xFFFFFFFF, 0xFA, 0xCF);
-    gdt_set_gate(4, 0, 0xFFFFFFFF, 0xF2, 0xCF);
+    // Null Descriptor
+    gdt_set_gate(
+        0,
+        0,
+        0,
+        0,
+        0
+    );
+
+    // Kernel Code Segment
+    gdt_set_gate(
+        1,
+        0,
+        0xFFFFFFFF,
+        GDT_KERNEL_CODE_FLAGS,
+        GDT_DEFAULT_GRANULARITY
+    );
+
+    // Kernel Data Segment
+    gdt_set_gate(
+        2,
+        0,
+        0xFFFFFFFF,
+        GDT_KERNEL_DATA_FLAGS,
+        GDT_DEFAULT_GRANULARITY
+    );
+
+    // User Code Segment
+    gdt_set_gate(
+        3,
+        0,
+        0xFFFFFFFF,
+        GDT_USER_CODE_FLAGS,
+        GDT_DEFAULT_GRANULARITY
+    );
+
+    // User Data Segment
+    gdt_set_gate(
+        4,
+        0,
+        0xFFFFFFFF,
+        GDT_USER_DATA_FLAGS,
+        GDT_DEFAULT_GRANULARITY
+    );
 
     gdt_flush((ptr_t)&gdt_p);
 }

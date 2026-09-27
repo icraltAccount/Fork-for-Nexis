@@ -45,7 +45,9 @@ void kinit() {
 void kmain() {
     kinit();
 
-console_write_string("Hello, Kernel");
+    console_move(30, 11);
+    console_set_color(VGA_COLOR_LIGHT_CYAN, VGA_COLOR_BLACK);
+    console_write_string("Hello, Kernel!");
 
     while(1) __asm__ __volatile__("hlt");
 }
