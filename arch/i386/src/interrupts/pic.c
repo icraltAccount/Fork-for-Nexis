@@ -5,7 +5,7 @@
 #include "io/io.h"
 #include <stdint.h>
 
-void pic_enable(io_value_t offset_1, io_value_t offset_2) {
+void pic_init(io_value_t offset_1, io_value_t offset_2) {
     io_outb(PIC1_COMMAND, ICW1_INIT | ICW1_ICW4);
     io_wait();
     io_outb(PIC2_COMMAND, ICW1_INIT | ICW1_ICW4);
@@ -23,9 +23,11 @@ void pic_enable(io_value_t offset_1, io_value_t offset_2) {
     io_wait();
     io_outb(PIC2_DATA, ICW4_8086);
     io_wait();
+}
 
-    io_outb(PIC1_DATA, 0xFC);
-    io_outb(PIC2_DATA, 0xFF);
+void pic_enable(void) {
+    io_outb(PIC1_DATA, 0x00);
+    io_outb(PIC2_DATA, 0x00);
 }
 
 void pic_disable(void) {

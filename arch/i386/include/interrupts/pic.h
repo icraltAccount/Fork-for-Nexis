@@ -31,7 +31,28 @@
 
 #define CASCADE_IRQ 2
 
-void pic_enable(io_value_t offset_1, io_value_t offset_2);
+#define PIC_IRQ_TIMER (1 << 0)
+#define PIC_IRQ_KEYBOARD (1 << 1)
+#define PIC_IRQ_CASCADE (1 << 2)
+#define PIC_IRQ_COM2 (1 << 3)
+#define PIC_IRQ_COM1 (1 << 4)
+#define PIC_IRQ_LPT2 (1 << 5)
+#define PIC_IRQ_FLOPPY (1 << 6)
+#define PIC_IRQ_LPT1 (1 << 7)
+
+#define PIC_IRQ_RTC (1 << 8)
+#define PIC_IRQ_ACPI (1 << 9)
+#define PIC_IRQ_IRQ10 (1 << 10)
+#define PIC_IRQ_IRQ11 (1 << 11)
+#define PIC_IRQ_MOUSE (1 << 12)
+#define PIC_IRQ_FPU (1 << 13)
+#define PIC_IRQ_PRIMARY_ATA (1 << 14)
+#define PIC_IRQ_SECONDARY_ATA (1 << 15)
+
+void pic_init(io_value_t offset_1, io_value_t offset_2);
+
+void pic_enable(void);
 void pic_disable(void);
+
 void irq_set_mask(uint8_t irq_line);
 void irq_clear_mask(uint8_t irq_line);

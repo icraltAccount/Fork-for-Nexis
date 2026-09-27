@@ -11,8 +11,6 @@
 #include "interrupts/pic.h"
 #include "interrupts/interrupts.h"
 
-#include "string/string.h"
-
 void kpanic(const vga_char_t* message) {
     interrupts_disable();
     console_clear();
@@ -39,7 +37,9 @@ void kinit() {
 
     gdt_init();
     idt_init();
-    pic_enable(0x20, 0x28);
+    pic_init(0x20, 0x28);
+
+    pic_enable();
 
     interrupts_enable();
 }
