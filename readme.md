@@ -2,9 +2,18 @@
 
  ## FudidOS
 
-<svg xmlns="http://www.w3.org/2000/svg" width="110" height="20" role="img" aria-label="Architecture: i386"><title>Architecture: i386</title><g shape-rendering="crispEdges"><rect width="77" height="20" fill="#555"/><rect x="77" width="33" height="20" fill="#007ec6"/></g><g fill="#fff" text-anchor="middle" font-family="Verdana,Geneva,DejaVu Sans,sans-serif" text-rendering="geometricPrecision" font-size="110"><text x="395" y="140" textLength="670" transform="scale(.1)">Architecture</text><text x="925" y="140" textLength="230" transform="scale(.1)">i386</text></g></svg>
-<svg xmlns="http://www.w3.org/2000/svg" width="188" height="20" role="img" aria-label="Tested: QEMU + Real Hardware"><title>Tested: QEMU + Real Hardware</title><g shape-rendering="crispEdges"><rect width="47" height="20" fill="#555"/><rect x="47" width="141" height="20" fill="#ea7233"/></g><g fill="#fff" text-anchor="middle" font-family="Verdana,Geneva,DejaVu Sans,sans-serif" text-rendering="geometricPrecision" font-size="110"><text x="245" y="140" textLength="370" transform="scale(.1)">Tested</text><text x="1165" y="140" textLength="1310" transform="scale(.1)">QEMU + Real Hardware</text></g></svg>
-<svg xmlns="http://www.w3.org/2000/svg" width="106" height="20" role="img" aria-label="License: GPL-2.0"><title>License: GPL-2.0</title><g shape-rendering="crispEdges"><rect width="51" height="20" fill="#555"/><rect x="51" width="55" height="20" fill="#67ac09"/></g><g fill="#fff" text-anchor="middle" font-family="Verdana,Geneva,DejaVu Sans,sans-serif" text-rendering="geometricPrecision" font-size="110"><text x="265" y="140" textLength="410" transform="scale(.1)">License</text><text x="775" y="140" textLength="450" transform="scale(.1)">MIT</text></g></svg>
+<p align="center">
+  <strong>An x86 kernel built from scratch.</strong>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Architecture-i386-informational?style=flat-square" alt="Architecture">
+  <img src="https://img.shields.io/badge/Language-C%20%2F%20NASM-blue?style=flat-square" alt="Language">
+  <img src="https://img.shields.io/badge/Build-Make-000000?style=flat-square" alt="Build">
+  <img src="https://img.shields.io/badge/Tested-QEMU%20%2B%20Real%20Hardware-orange?style=flat-square" alt="Testing">
+  <img src="https://img.shields.io/badge/License-MIT-green?style=flat-square" alt="License">
+  <img src="https://img.shields.io/badge/Status-Experimental-orange?style=flat-square" alt="Status">
+</p>
 
 # Overview
 
