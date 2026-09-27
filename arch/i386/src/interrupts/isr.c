@@ -3,13 +3,30 @@
 
 #include "interrupts/isr.h"
 #include "interrupts/idt.h"
+#include "interrupts/interrupts.h"
 #include "types/types.h"
+#include "main.h"
 
 extern ptr_t isr_stub_table[];
 
-void isr_exception_handler(void) {
-    __asm__ __volatile__("cli");
-    __asm__ __volatile__("hlt");
+static const char* exception_messages[32] = {
+    "Division By Zero", "Debug", "Non Maskable Interrupt",
+    "Breakpoint", "Into Detected Overflow", "Out of Bounds",
+    "Invalid Opcode", "No Coprocessor", "Double Fault",
+    "Coprocessor Segment Overrun", "Bad TSS", "Segment Not Present",
+    "Stack Fault", "General Protection Fault", "Page Fault",
+    "Unknown Interrupt", "Coprocessor Fault", "Alignment Check",
+    "Machine Check", "Reserved", "Reserved", "Reserved", "Reserved",
+    "Reserved", "Reserved", "Reserved", "Reserved", "Reserved",
+    "Reserved", "Reserved", "Reserved", "Reserved"
+};
+
+void isr_handler(isr_frame_t* frame) {
+    interrupts_disable();
+
+    kpanic(exception_messages[frame->vector]);
+
+    while(1) __asm__ __volatile__("hlt");
 }
 
 void isr_install(void) {

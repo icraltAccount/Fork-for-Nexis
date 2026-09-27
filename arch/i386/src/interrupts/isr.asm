@@ -3,7 +3,7 @@
 
 global isr_stub_table
 
-extern isr_exception_handler
+extern isr_handler
 
 section .data
 
@@ -43,21 +43,43 @@ isr_stub_table:
 
 section .text
 
+isr_common_stub:
+    pusha
+
+    mov ax, ds
+    push eax
+
+    mov ax, 0x10
+    mov ds, ax
+    mov es, ax
+    mov fs, ax
+    mov gs, ax
+
+    push esp
+    call isr_handler
+    add esp, 4
+
+    pop eax
+    mov ds, ax
+    mov es, ax
+    mov fs, ax
+    mov gs, ax
+
+    popa
+    add esp, 8
+    iret
+
 %macro ISR_NO_ERROR 1
 isr_stub_%1:
-    pusha
-    call isr_exception_handler
-    popa
-    iret
+    push dword 0
+    push dword %1
+    jmp isr_common_stub
 %endmacro
 
 %macro ISR_ERROR 1
 isr_stub_%1:
-    pusha
-    call isr_exception_handler
-    popa
-    add esp, 4
-    iret
+    push dword %1
+    jmp isr_common_stub
 %endmacro
 
 ISR_NO_ERROR 0
