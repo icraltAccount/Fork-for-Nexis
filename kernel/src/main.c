@@ -6,13 +6,13 @@
 #include "console/console.h"
 #include "vga/vga.h"
 #include "keyboard/keyboard.h"
+#include "memory/pmm/pmm.h"
 
 #include "interrupts/idt.h"
 #include "interrupts/gdt.h"
 #include "interrupts/pic.h"
 #include "interrupts/irq.h"
 #include "interrupts/interrupts.h"
-#include "pmm/pmm.h"
 
 
 void kpanic(const vga_char_t* message) {
@@ -33,14 +33,18 @@ void kpanic(const vga_char_t* message) {
     while(1) __asm__ __volatile__("hlt");
 }
 
-void kinit() {
+bool kinit(magic_t magic, mbi_t *mbi) {
     interrupts_disable();
+
+    if (magic != 0x2BADB002) kpanic("Invalid magic number.");
 
     console_clear();
     console_move(0, 0);
+
     gdt_init();
     idt_init();
     pic_init(0x20, 0x28);
+    pmm_init(mbi);
 
     pic_enable();
 
@@ -48,18 +52,11 @@ void kinit() {
     irq_register(1, keyboard_handler);
 
     interrupts_enable();
+
+    return true;
 }
 
-void kmain() {
-    kinit();
-
-    while(1) {
-        keyboard_char_t c;
-
-        if (keyboard_get_char(&c)) {
-            console_write_char(c);
-        }
-    }
-
+void kmain(magic_t magic, mbi_t *mbi) {
+    if (!kinit(magic, mbi)) return;
     while(1) __asm__ __volatile__("hlt");
 }

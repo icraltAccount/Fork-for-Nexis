@@ -6,9 +6,13 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#define null (void*)0
+
 typedef uint32_t ptr_t;
+
 typedef int32_t isize_t;
 typedef uint32_t usize_t;
+
 typedef uint8_t byte_t;
 
 void *memset(void *dst, byte_t value, usize_t n);
