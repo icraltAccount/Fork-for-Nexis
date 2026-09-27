@@ -5,10 +5,12 @@
 
 #include "console/console.h"
 #include "vga/vga.h"
+#include "keyboard/keyboard.h"
 
 #include "interrupts/idt.h"
 #include "interrupts/gdt.h"
 #include "interrupts/pic.h"
+#include "interrupts/irq.h"
 #include "interrupts/interrupts.h"
 
 void kpanic(const vga_char_t* message) {
@@ -41,15 +43,22 @@ void kinit() {
 
     pic_enable();
 
+    keyboard_init();
+    irq_register(1, keyboard_handler);
+
     interrupts_enable();
 }
 
 void kmain() {
     kinit();
 
-    console_move(30, 11);
-    console_set_color(VGA_COLOR_LIGHT_CYAN, VGA_COLOR_BLACK);
-    console_write_string("Hello, Kernel!");
+    while(1) {
+        keyboard_char_t c;
+
+        if (keyboard_get_char(&c)) {
+            console_write_char(c);
+        }
+    }
 
     while(1) __asm__ __volatile__("hlt");
 }
