@@ -12,7 +12,6 @@
   <img src="https://img.shields.io/badge/Build-Make-000000?style=flat-square" alt="Build">
   <img src="https://img.shields.io/badge/Tested-QEMU%20%2B%20Real%20Hardware-orange?style=flat-square" alt="Testing">
   <img src="https://img.shields.io/badge/License-MIT-green?style=flat-square" alt="License">
-  <img src="https://img.shields.io/badge/Status-Experimental-orange?style=flat-square" alt="Status">
 </p>
 
 # Overview
