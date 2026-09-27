@@ -12,6 +12,7 @@
 #include "interrupts/pic.h"
 #include "interrupts/irq.h"
 #include "interrupts/interrupts.h"
+#include "pmm/pmm.h"
 
 void kpanic(const vga_char_t* message) {
     interrupts_disable();
@@ -36,7 +37,6 @@ void kinit() {
 
     console_clear();
     console_move(0, 0);
-
     gdt_init();
     idt_init();
     pic_init(0x20, 0x28);
