@@ -2,9 +2,9 @@
 
  ## FudidOS
 
-https://camo.githubusercontent.com/4f120bbdd1ddd982e7a4c143e6df4d9ff23a5132473156e3a03d96be4b6b0447/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f4172636869746563747572652d693338362d696e666f726d6174696f6e616c3f7374796c653d666c61742d737175617265
-https://camo.githubusercontent.com/abb511f218dcb8e39d2fc3bc3f2ac7dd8eac3dc5a43d847261c652a3203f9261/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f5465737465642d51454d552532302532422532305265616c25323048617264776172652d6f72616e67653f7374796c653d666c61742d737175617265
-https://camo.githubusercontent.com/87a9316f4bcda1dd5768bf56b5a2ec837448781875d44aefce39b571ce945929/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f4c6963656e73652d47504c2d2d322e302d677265656e3f7374796c653d666c61742d737175617265
+<svg xmlns="http://www.w3.org/2000/svg" width="110" height="20" role="img" aria-label="Architecture: i386"><title>Architecture: i386</title><g shape-rendering="crispEdges"><rect width="77" height="20" fill="#555"/><rect x="77" width="33" height="20" fill="#007ec6"/></g><g fill="#fff" text-anchor="middle" font-family="Verdana,Geneva,DejaVu Sans,sans-serif" text-rendering="geometricPrecision" font-size="110"><text x="395" y="140" textLength="670" transform="scale(.1)">Architecture</text><text x="925" y="140" textLength="230" transform="scale(.1)">i386</text></g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="188" height="20" role="img" aria-label="Tested: QEMU + Real Hardware"><title>Tested: QEMU + Real Hardware</title><g shape-rendering="crispEdges"><rect width="47" height="20" fill="#555"/><rect x="47" width="141" height="20" fill="#ea7233"/></g><g fill="#fff" text-anchor="middle" font-family="Verdana,Geneva,DejaVu Sans,sans-serif" text-rendering="geometricPrecision" font-size="110"><text x="245" y="140" textLength="370" transform="scale(.1)">Tested</text><text x="1165" y="140" textLength="1310" transform="scale(.1)">QEMU + Real Hardware</text></g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="106" height="20" role="img" aria-label="License: GPL-2.0"><title>License: GPL-2.0</title><g shape-rendering="crispEdges"><rect width="51" height="20" fill="#555"/><rect x="51" width="55" height="20" fill="#67ac09"/></g><g fill="#fff" text-anchor="middle" font-family="Verdana,Geneva,DejaVu Sans,sans-serif" text-rendering="geometricPrecision" font-size="110"><text x="265" y="140" textLength="410" transform="scale(.1)">License</text><text x="775" y="140" textLength="450" transform="scale(.1)">MIT</text></g></svg>
 
 # Overview
 
