@@ -1,0 +1,81 @@
+/*
+ * WRITTEN BY: nicooolo
+ */
+
+
+/*
+ * NOTES FOR MYSELF(nicooolo):
+ *      the 32 bit address is separated into: 10 bits -> PD, 10 bits -> PT, 12 bits -> flags/end
+ *      the page directory stores the address of where the tables are stores in RAM
+ *
+ * NOTES FOR icarotelesdasilva:
+ *      adiciona o código com comentários lá no "documentation/vmm_c".
+ *
+ */
+
+
+/*
+ * REALLY IMPORTANT WARNING, PLEASE READ: WHEN PAGING IS DISABLED, WE WRITE THROUGH THE MEMORY DIRECTLY, BUT WHEN WE
+ *                                        ACTIVATE PAGING, ALL THE C POINTERS ARE INTERPRETED BY THE CPU AS VIRTUAL
+ *                                        ADDRESSES, THE OS WILL END UP IN A PAGE FAULT IN CASE PAGING IS ACTIVATED
+ *                                        BEFORE MAPPING THE VMM: WHEN THE CPU TRIES TO READ THE VARIABLE page_table_entry
+ *                                        THE CPU WILL END UP THROWING A PAGE FAULT AND BLOCK THE KERNEL FROM CONTINUING
+ */
+
+
+#include "memory/vmm/vmm.h"
+#include "memory/pmm/pmm.h"
+#include "memory/MMU/tlb.h"
+
+void vmm_map(page_directory_struct* page_directory, uint32_t virtual_address, uint32_t physical_address, uint32_t flags){
+    uint32_t page_directory_index = virtual_address >> 22; //gets the left 10 bits from 32 bits we need, so we move 22 bits to the right(32 - 22 = 10)
+    uint32_t page_table_index = (virtual_address >> 12) & 0x3FF; //gets the mid 10 bits from 32 bits we need, so we move 12 bits to the right and we make an AND logical operation with 0x3FF that is 1111 1111 in binary, and because of that we get the middle 10 bits only
+
+    physical_address &= 0xFFFFF000; //makes the last 12 bits of the physical address become all zeroes, because if someone puts the physical address with the 12 last bits without being zeroes, the flags are going to get corrupted
+
+    pde_t* page_directory_entry = &page_directory->entries[page_directory_index]; //gets the pointer of the first 10 bits that is the page directory
+    page_table_struct* page_table_entry;
+
+    if(!(*page_directory_entry & VMM_FLAG_PRESENT)){ //if the present flag is NOT turned on, that means that the table still doesn't exist
+        uint32_t new_table = (uint32_t)pmm_alloc_page(); //creates a new table inside the directory in RAM
+        *page_directory_entry = new_table | VMM_FLAG_PRESENT | VMM_FLAG_WRITABLE | VMM_FLAG_USER; //adds the flags to the new_physical_table, since the last 12 bits are zeroes in the new_physical_table, we change only those bits, changing the flags
+        page_table_entry = (page_table_struct*)new_table; //sets the table to the new table that we created and configurated
+        for(uint32_t i = 0; i < 1024; i++){
+            page_table_entry->entries[i] = 0; //makes everything become 0 because the pmm_alloc_page() function returns memory with garbage, if any number had 1 in the present flag bit, the CPU would try to read it and everything would corrupt with random garbage interpreted as data
+        }
+    }else{
+        page_table_entry = (page_table_struct*)(*page_directory_entry & 0xFFFFF000); //if the pages table was already created before, it gets the address of the table that was created before and makes all the flags become 0
+    }
+    page_table_entry->entries[page_table_index] = physical_address | VMM_FLAG_PRESENT | flags; //combines the address of the table in the memory with the present flag and with some other flags
+    tlb_flush_single(virtual_address); //stores the last translation(physical address -> virtual addresses) in TLB
+}
+
+void vmm_load_cr3(page_directory_struct* page_directory){
+    __asm__ __volatile__("mov %0, %%cr3" : : "r"(page_directory) : "memory");
+}
+
+void vmm_enable_paging(){
+    /*
+     * this part is for icarotelesdasilva
+     * message for icarotelesdasilva:
+     *      tu vai mudar o bit 31 do registrador cr0, acho que se tu usar o inline assembly tu consegue.
+     *
+     *      não faz a merda que eu fiz de esquecer de colocar "%%" para usar registradores especiais no inline asm.
+     *
+     *      cuidado pra não fazer bosta no registrador cr0 pois ele tem várias configurações importantissímas, não faz
+     *      merda.
+     *
+     *      se você leu você é gay.
+     */
+}
+
+void vmm_init(){
+    /*
+     * this part is for icarotelesdasilva
+     * message for icarotelesdasilva:
+     *      pelo amor de deus, lê o warning que deixei lá em cima e inicializa o paging e muda o cr3 no FINAL da função.
+     *
+     *      não tenho a miníma ideia de como fazer essa função aqui mas acho que tu chama as funções de cima ali e mais
+     *      alguma coisa ai, bah notche, bah tardi, bah djiah.
+     */
+}

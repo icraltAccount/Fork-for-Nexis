@@ -1,5 +1,8 @@
+/*
+ * WRITTEN BY: nicooolo
+ * MODIFIED BY: saintsHr
+ */
 #pragma once
-
 #include "memory/memory.h"
 #include <stdint.h>
 
@@ -36,5 +39,5 @@ typedef struct{
 } __attribute__((packed)) mbi_t;
 
 void pmm_init(mbi_t *mbd);
-void *pmm_alloc_page();
+void* pmm_alloc_page();
 void pmm_free_page(void *address);

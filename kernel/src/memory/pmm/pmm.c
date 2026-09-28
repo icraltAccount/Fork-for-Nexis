@@ -1,3 +1,7 @@
+/*
+ * WRITTEN BY: nicooolo
+ * MODIFIED BY: saintsHr
+ */
 #include "memory/pmm/pmm.h"
 #include "main.h"
 #include <stdint.h>
@@ -58,7 +62,7 @@ void pmm_init(mbi_t *mbd){
         map_start = (mmap_t *)((ptr_t)map_start + map_start->size + sizeof(ptr_t));
     }
 
-    ptr_t kernel_start_frame = _kernel_start / PAGE_SIZE;
+    //not used: ptr_t kernel_start_frame = _kernel_start / PAGE_SIZE;
     ptr_t kernel_end_frame = (ptr_t)&_kernel_end / PAGE_SIZE;
 
     for(usize_t i = 0; i < kernel_end_frame; i++){
@@ -75,7 +79,7 @@ void pmm_init(mbi_t *mbd){
     }
 }
 
-void *pmm_alloc_page(){
+void* pmm_alloc_page(){
     if(pmm_used_memory >= pmm_total_memory){
         kpanic("Tried to allocate memory that is not avaible.");
         return 0;

@@ -1,5 +1,5 @@
-#pragma once
-
+#ifndef PMM_H
+#define PMM_H
 #include <stdint.h>
 #define BITMAP_SET(frame) ( bitmap[frame / 32] |= (1 << (frame % 32)) ) //turn a bit on
 #define BITMAP_CLEAR(frame) ( bitmap[frame / 32] &= ~(1 << (frame % 32)) ) //turn a bit off
@@ -32,3 +32,4 @@ typedef struct{ //informations that grub gives to us about the system
 void pmm_init(info_struct* mbd); //mbd means multiboot descriptor/multiboot data
 void* alloc();
 void free(void* address);
+#endif

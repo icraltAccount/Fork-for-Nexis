@@ -1,6 +1,9 @@
 // Copyright (c) 2026 icarotelesdasilva colauzz-coder saintsHr
 // Licensed under the MIT License
-
+/*
+ * WRITTEN BY: nicooolo
+ * MODIFIED BY: saintsHr
+ */
 #include "interrupts/idt.h"
 #include "interrupts/isr.h"
 #include "interrupts/irq.h"

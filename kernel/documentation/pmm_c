@@ -1,0 +1,107 @@
+/*
+ * IMPORTANT -> the code was made by nicooolo but the code was polished by saintsHr in the main code, this is the original code with the documentation
+ */
+#include "../../include/pmm/pmm.h"
+#include <stdint.h>
+#include "console/console.h"
+uint32_t memory_size = 0; //the amount of RAM memory that exists
+uint32_t used_memory = 0; //the amount of used and not avaible memory
+uint32_t max_frames = 0; //the amount of frames that exist
+uint32_t* bitmap = 0; //we still don't know the size of the memory so we can't separate it into Bits as an array, so it's a null pointer
+extern uint32_t _kernel_end; //created by the linker, it is exactly where the kernel ends in RAM
+void pmm_init(info_struct* mbd){ //configures all the occupied and non occupied parts of the memory
+    if(!(mbd->flags & (1 << 6))){ //checks if grub could read the memory map
+        console_write_string("[ error ] grub couldn't read the memory map, kernel can not continue without knowing where theres RAM");
+        return;
+    }else{
+        console_write_string("[ success ] grub read the memory map");
+    }
+
+    memory_map_struct* map_start = (memory_map_struct*)mbd->map_address; //points to the start of the memory map
+
+    uint32_t map_end = mbd->map_address + mbd->map_length; //start + size = last element of the map
+
+    while((uint32_t)map_start < map_end){ //passes through the entire bitmap to look for the ones that are the type 1(usable/free RAM)
+        if(map_start->type == 1){ //1 means usable RAM
+            uint32_t last_byte = map_start->address + map_start->length; //returns the address of the last byte of that region in RAM
+            if(last_byte > memory_size){
+                memory_size = last_byte; //gets the size of the memory
+            }
+        }
+        map_start = (memory_map_struct*)((uint32_t)map_start + map_start->size + sizeof(uint32_t)); //the jump can't count the first piece, so we can't use (uint32_t)map_start + map_start->size
+    }
+
+    max_frames = memory_size / PAGE_MAX; //gets the amount of frames after getting the definitive amount of memory
+    uint32_t bitmap_size = max_frames / 8;
+    bitmap = (uint32_t*)&_kernel_end; //makes the address of the bitmap become away from the kernel for security
+
+    for(uint32_t i = 0; i < bitmap_size / 4; i++){ //turns all the bits to 1, we divide the size by 4 because we want the size in bytes
+        bitmap[i] = 0xFFFFFFFF; //makes all the bits turn to 1, makes everything become occupied
+    }
+
+    used_memory = memory_size; //RAM is 100% occupied
+    map_start = (memory_map_struct*)mbd->map_address; //where the map starts in memory
+    while((uint32_t)map_start < map_end){
+        if(map_start->type == 1){ //checks if it's free, here we are going to set the frames that are free to 0
+            uint32_t start_frame = map_start->address / PAGE_MAX; //where the first frame starts in memory
+            uint32_t total_frames = map_start->length / PAGE_MAX; //the amount of existing frames
+            for(uint32_t i = 0; i < total_frames; i++){
+                BITMAP_CLEAR(start_frame + i); //passes through all the frames starting at start_frame and make them become 0 that means they are free/usable frames
+                if(used_memory >= PAGE_MAX){
+                    used_memory -= PAGE_MAX; //since some parts have been freed, we configure the used_memory again
+                }
+            }
+        }
+        map_start = (memory_map_struct*)((uint32_t)map_start + map_start->size + sizeof(uint32_t)); //jumps to the next frame
+    }
+
+    //not being used but it indicates of where the kernel starts in bytes: uint32_t kernel_start_frame = 0x100000 / PAGE_MAX;
+    uint32_t kernel_end_frame = (uint32_t)&_kernel_end / PAGE_MAX; //the exact byte of where the kernel ends in RAM
+    for(uint32_t i = 0; i < kernel_end_frame; i++){ //makes a loop that passes through all the bytes of the kernel
+        BITMAP_SET(i); //sets the kernel and BIOS bits to occupied since they can't be free to use
+        used_memory += PAGE_MAX; //configures the used memory since we set the kernel and BIOS bytes to occupied(1)
+    }
+
+    uint32_t bitmap_start_frame = (uint32_t)bitmap / PAGE_MAX; //where the bitmap starts
+    uint32_t bitmap_end_frame = ((uint32_t)bitmap + bitmap_size) / PAGE_MAX; //the exact byte of where the bitmap ends
+    for (uint32_t i = bitmap_start_frame; i <= bitmap_end_frame; i++) { //sets the bytes that the bitmap used to occupied in memory
+        BITMAP_SET(i); //sets all the used bytes by the bitmap
+        used_memory += PAGE_MAX; //configures the used memory again since we have set the bytes used for the bitmap
+    }
+}
+
+void* alloc(){
+    if(used_memory >= memory_size){ //checks if memory is fully occupied
+        console_write_string("[ error ] tried to allocate memory that is not avaible");
+        return 0; //leaves the function if theres no free memory
+    }
+
+    uint32_t total_frames = max_frames / 32; //the amount of frames, we divide by 32 because we use the type uint32_t for the frames
+    for(uint32_t i = 0; i < total_frames; i++){ //loops through all the frames
+        if(bitmap[i] != 0xFFFFFFFF){ //if the next 32 frames are equal to 0xFFFFFFFF that means that the next 32 frames are all 1, so we can ignore them, that is an optimization for the CPU
+            for(uint32_t bit = 0; bit < 32; bit++){ //there is at least 1 free frame/bit in those 32 frames/bits, that means that he is 0
+                if(!(bitmap[i] & (1 << bit))){ //tests the bits/frames and finds the ones that are free(0)
+                    uint32_t frame = (i * 32) + bit; //discovers the number of the frame/bit in the bitmap array
+                    BITMAP_SET(frame); //sets to used the used frames
+                    used_memory += PAGE_MAX; //re-configures the used_memory again
+                    return (void*)(frame * PAGE_MAX); //returns the address of the frame
+                }
+            }
+        }
+    }
+    return 0; //if it didn't find anything free we return 0 and leave the function
+}
+
+void free(void* address){
+    uint32_t frame = (uint32_t)address / PAGE_MAX; //converts the allocated address received to the number of the frame in the array
+    if (frame >= max_frames) { //if the frame doesn't exist in RAM, for security we leave the function and we don't free it
+        console_write_string("[ error ] couldn't free memory, memory that tried to free doesn't exist");
+        return;
+    }
+
+    BITMAP_CLEAR(frame); //clears the frame if everything went good
+
+    if (used_memory >= PAGE_MAX) { //re-configures the used_memory again
+        used_memory -= PAGE_MAX;
+    }
+}

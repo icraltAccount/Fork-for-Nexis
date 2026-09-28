@@ -1,16 +1,15 @@
-#include "tlb.h"
-
-#include <stdint.h>
-
 /*
+ * WRITTEN BY: icarotelesdasilva
+ */
 
+#include "memory/MMU/tlb.h"
+#include <stdint.h>
+/*
 * All files were sourced specifically from osdev.org, from the learning resource at  (https://wiki.osdev.org/Memory_Management_Unit#Translation)
-
 */
 
-
-void tlb_flush_single(unsigned long virtual_address) {
-    asm volatile("invlpg (%0)" :: "r" (virtual_address) : "memory");
+void tlb_flush_single(uint32_t virtual_address) {
+    __asm__ __volatile__("invlpg (%0)" :: "r" (virtual_address) : "memory");
 }
 
 
