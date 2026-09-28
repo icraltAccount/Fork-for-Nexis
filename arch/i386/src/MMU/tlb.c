@@ -3,25 +3,18 @@
 
 /*
 
+* All files were sourced specifically from osdev.org, from the learning resource at  (https://wiki.osdev.org/Memory_Management_Unit#Translation)
 
 */
 
 
-int tlb_lookup(vaddr_t v, paddr_t *p)
-{
-   for (int i=0; i<CPU_MODEL_MAX_TLB_ENTRIES; i++)
-   {
-      if (hw_tlb[i].flags & TLB_ENTRY_FLAGS_INUSE && hw_tlb[i].entry_virtual_address == v)
-      {
-         *p = hw_tlb[i].relevant_physical_address;
-         return 1;
-      };
-   };
-   return 0;
+void tlb_flush_single(unsigned long virtual_address) {
+    asm volatile("invlpg (%0)" :: "r" (virtual_address) : "memory");
 }
 
-
-
+void tlb_flush_model(unsigned long virtual_address) {
+    asm volatile ("TLBFLSH %0\n\t" :: "r" (virtual_address));
+}
 
 /*
 
