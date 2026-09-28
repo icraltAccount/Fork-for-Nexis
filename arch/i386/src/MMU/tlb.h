@@ -1,11 +1,7 @@
-#ifndef TLB_H
-#define TLB_H
-
+#pragma once
 
 #include <stdint.h>
 
 
-void tlb_flush_single(uintptr_t virtual_address);
-void tlb_flush_all(void);
+void tlb_flush_single(unsigned long virtual_address);
 
-#endif

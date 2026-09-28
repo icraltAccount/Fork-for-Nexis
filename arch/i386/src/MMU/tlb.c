@@ -1,5 +1,6 @@
-#define "tlb.h"
+#include "tlb.h"
 
+#include <stdint.h>
 
 /*
 
@@ -12,9 +13,7 @@ void tlb_flush_single(unsigned long virtual_address) {
     asm volatile("invlpg (%0)" :: "r" (virtual_address) : "memory");
 }
 
-void tlb_flush_model(unsigned long virtual_address) {
-    asm volatile ("TLBFLSH %0\n\t" :: "r" (virtual_address));
-}
+
 
 /*
 

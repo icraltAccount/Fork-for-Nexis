@@ -14,7 +14,6 @@
 #include "interrupts/interrupts.h"
 #include "pmm/pmm.h"
 
-#include "MMU/tlb.h"
 
 void kpanic(const vga_char_t* message) {
     interrupts_disable();
