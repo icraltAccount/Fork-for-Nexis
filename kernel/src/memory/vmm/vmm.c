@@ -1,12 +1,7 @@
 /*
- * WRITTEN BY: nicooolo
+ * WRITTEN BY: nicooolo icarotelesdasilva
  */
 
-
-/* NOTES FOR icarotelesdasilva:
- *      adiciona o código com comentários lá no "documentation/vmm_c".
- *
- */
 
 
 /*
@@ -51,27 +46,37 @@ void vmm_load_cr3(page_directory_struct* page_directory){
 }
 
 void vmm_enable_paging(){
-    /*
-     * this part is for icarotelesdasilva
-     * message for icarotelesdasilva:
-     *      tu vai mudar o bit 31 do registrador cr0, acho que se tu usar o inline assembly tu consegue.
-     *
-     *      não faz a merda que eu fiz de esquecer de colocar "%%" para usar registradores especiais no inline asm.
-     *
-     *      cuidado pra não fazer bosta no registrador cr0 pois ele tem várias configurações importantissímas, não faz
-     *      merda.
-     *
-     *      se você leu você é gay.
-     */
+
+ __asm__ __volatile__(
+        "mov %0, %%cr3" 
+        : 
+        : "r"(page_directory_address)
+    );
+
+
+ __asm__ __volatile__(
+        "mov %%cr0, %%eax\n\t"
+        "or $0x80000000, %%eax\n\t"
+        "mov %%eax, %%cr0"
+        :
+        :
+        : "eax"
+    );
+
 }
 
 void vmm_init(){
-    /*
-     * this part is for icarotelesdasilva
-     * message for icarotelesdasilva:
-     *      pelo amor de deus, lê o warning que deixei lá em cima e inicializa o paging e muda o cr3 no FINAL da função.
-     *
-     *      não tenho a miníma ideia de como fazer essa função aqui mas acho que tu chama as funções de cima ali e mais
-     *      alguma coisa ai, bah notche, bah tardi, bah djiah.
-     */
+    page_directory_struct* boot_dir = (page_directory_struct*)pmm_alloc_page();
+
+  for(int i = 0; i < 1024; i++) {
+        boot_dir->entries[i] = 0;
+    }
+
+ for(uint32_t addr = 0; addr < 0x400000; addr += 4096){
+        vmm_map(boot_dir, addr, addr, VMM_FLAG_WRITABLE);
+    }
+
+    vmm_load_cr3(boot_dir);
+ vmm_enable_paging(); 
+
 }
