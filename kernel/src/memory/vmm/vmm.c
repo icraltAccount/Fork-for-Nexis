@@ -1,5 +1,5 @@
 /*
- * WRITTEN BY: nicooolo icarotelesdasilva
+ * WRITTEN BY: nicooolo & icarotelesdasilva
  */
 
 
