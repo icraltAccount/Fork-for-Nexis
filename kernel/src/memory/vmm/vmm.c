@@ -47,12 +47,6 @@ void vmm_load_cr3(page_directory_struct* page_directory){
 
 void vmm_enable_paging(){
 
- __asm__ __volatile__(
-        "mov %0, %%cr3" 
-        : 
-        : "r"(page_directory_address)
-    );
-
 
  __asm__ __volatile__(
         "mov %%cr0, %%eax\n\t"
@@ -68,15 +62,14 @@ void vmm_enable_paging(){
 void vmm_init(){
     page_directory_struct* boot_dir = (page_directory_struct*)pmm_alloc_page();
 
-  for(int i = 0; i < 1024; i++) {
+    for(int i = 0; i < 1024; i++) {
         boot_dir->entries[i] = 0;
     }
 
- for(uint32_t addr = 0; addr < 0x400000; addr += 4096){
+    for(uint32_t addr = 0; addr < 0x400000; addr += 4096){
         vmm_map(boot_dir, addr, addr, VMM_FLAG_WRITABLE);
     }
-
     vmm_load_cr3(boot_dir);
- vmm_enable_paging(); 
+    vmm_enable_paging();
 
 }
